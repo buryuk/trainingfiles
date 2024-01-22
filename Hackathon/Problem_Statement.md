@@ -1,5 +1,9 @@
 # Problem Statement: Deploying MongoDB with StatefulSet, MongoDB Exporter, and PrometheusRule in Kubernetes
 
+## Design
+
+![Design](./Design.png?raw=true "Design")
+
 ## Challenge Overview:
 
 Your task is to design and implement a DevOps pipeline that deploys MongoDB with StatefulSet in a Kubernetes environment, integrates a MongoDB exporter for Prometheus monitoring, and sets up PrometheusRule for alerting and monitoring. The goal is to ensure efficient management of MongoDB instances, data consistency, high availability, and robust monitoring for applications that rely on MongoDB.
@@ -57,6 +61,29 @@ Provide clear and concise documentation for the entire MongoDB deployment and ma
 ### Additional Information:
 
 You will be provided with access to the Kubernetes cluster and necessary tools and resources (container images) to complete the task. You are encouraged to collaborate in teams or work individually, and you will have a specific time frame to complete the challenge.
+
+### Images
+
+- Database: yukselburak/mongodb:latest
+- App: yukselburak/app:latest
+- Mongo Seed: yukselburak/mongo-seed:latest
+
+### Tips
+
+1. Secret for database needs to include username: admin and password: burak3409
+2. Database needs below environment variables:
+    - MONGO_INITDB_ROOT_USERNAME
+    - MONGO_INITDB_ROOT_PASSWORD
+    - MONGO_INITDB_DATABASE (This should be admin)
+3. App and Mongo Seed Job need below environment variables:
+- MONGO_USERNAME
+- MONGO_PASSWORD
+- MONGO_INITDB_DATABASE
+4. Horizontal Pod Autoscaler needs to point to the deployment.
+5. Prometheus Service Monitor needs to point to the Service labels.
+6. Prometheus Rule is created for Prometheus itself.
+
+
 
 ### Extra
 1. Configure Mongo Exporter to export logs to Prometheus
