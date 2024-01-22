@@ -260,8 +260,63 @@
     ```
     helm upgrade myhelloworld --reuse-values --set replicaCount=2 ./hello-world
     ```
+    Check Helm charts:
+    ```
+    helm list
+    ```
+    See now we have REVISION 2.
+
     We can see other values can be changed in hello-world/values.yaml.
-    Optionally, we can create our own myvalues.yaml file and specify all the new values for new release. But in this hands-on we will not do that.
+    Copy values.yaml file to your working directory and change its name to myvalues.yaml file.
+    Change replicaCount to 3.
+    Then execute below command:
+    ```
+    helm upgrade myhelloworld -f myvalues.yaml ./hello-world
+    ```
+    A new revision is installed.
+
+    Check helm chart version:
+    ```
+    helm list
+    ```
+    See now revision 3.
+
+    See revisions of a release:
+    ```
+    helm history myhelloworld
+    ```
+    We have 3 revisions.
+
+    We can rollback one previous revision with below command:
+    ```
+    helm rollback myhelloworld
+    ```
+    Let's check our revisions:
+    ```
+    helm list
+    ```
+    Actually, helm went back to one back revision but it created a new revision.
+    You can see Description of revision 4 as "Rollback to 2".
+
+    What if we want to go back revision 2 from our point which is revision 4.
+    We can specific revision number like below:
+    ```
+    helm rollback myhelloworld 2
+    ```
+    Let's check our revision history and see we have 5 revisions now.
+    ```
+    helm history myhelloworld
+    ```
+    We can uninstall helm revision like below command:
+    ```
+    helm uninstall myhelloworld
+    ```
+    Check if we have any helm revision:
+    ```
+    helm list
+    ```
+    It should be nothing!
+
 
 20. Clean your environment
     ```
