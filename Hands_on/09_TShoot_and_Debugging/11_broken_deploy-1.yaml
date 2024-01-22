@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-1
+spec:
+  selector:
+    matchLabels:
+      app: deploy-1
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: deploy-1
+    spec:
+      containers:
+      - name: deploy-1
+        image: registry.k8s.io/goproxy:0.1
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 2

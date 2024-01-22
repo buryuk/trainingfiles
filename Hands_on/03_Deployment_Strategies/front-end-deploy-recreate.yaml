@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end-deploy-recreate
+  labels:
+    app: front-end-deploy-recreate
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: front-end-deploy-pod
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: front-end-deploy-pod
+    spec:
+      containers:
+      - name: front-end-deploy-container
+        image: nginx:1.21
+        ports:
+        - containerPort: 80

@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <title>Front End</title>
+    </head>
+    <body>
+        <p>Hello World!</p>
+    </body>
+    </html>
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: front-end-cm

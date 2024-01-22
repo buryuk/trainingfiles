@@ -1,0 +1,20 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: testadmin
+rules:
+  - apiGroups: ['*']
+    resources: ['*']
+    verbs: ['*']
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: testadminbinding
+subjects:
+  - kind: ServiceAccount
+    name: myaccount
+roleRef:
+  kind: Role
+  name: testadmin
+  apiGroup: rbac.authorization.k8s.io

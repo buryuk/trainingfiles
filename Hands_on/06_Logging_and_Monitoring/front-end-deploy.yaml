@@ -1,0 +1,197 @@
+apiVersion: v1
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <title>Front End</title>
+    </head>
+    <body>
+    <p class="spin">Hello World! I'm getting dizzy!</p>
+    </body>
+    <style>
+        @keyframes spin {
+            from {
+            }
+            to {
+                transform: rotate(64000deg);
+            }
+        }
+        .spin {
+            animation-name: spin;
+            animation-duration: 300s;
+            font-size: 1.5em;
+            position: absolute;
+            padding-left: 42.5vw;
+            padding-right: 42.5vw;
+            padding-top: 50vh;
+            text-align: center;
+        }
+    </style>
+    </html>
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: front-end-content
+---
+apiVersion: v1
+data:
+  config.hcl: |
+    listen {
+      port = 4040
+    }
+    namespace "nginx" {
+      source = {
+        syslog {
+          listen_address = "udp://127.0.0.1:5531"
+          format = "rfc3164"
+          tags = ["nginx"]
+        }
+      }
+      format = "$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" \"$http_x_forwarded_for\""
+      labels {
+        app = "default"
+      }
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: exporter-config
+---
+apiVersion: v1
+data:
+  nginx.conf: |2
+    user  nginx;
+    worker_processes  auto;
+    error_log  /var/log/nginx/error.log notice;
+    pid        /var/run/nginx.pid;
+    events {
+        worker_connections  1024;
+    }
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+        access_log  /var/log/nginx/access.log  main;
+        access_log  syslog:server=127.0.0.1:5531,tag=nginx  main;
+        sendfile        on;
+        #tcp_nopush     on;
+        keepalive_timeout  65;
+        #gzip  on;
+        include /etc/nginx/conf.d/*.conf;
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: front-end-nginx-conf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/component: front-end
+    app.kubernetes.io/part-of: hackathon
+    app.kubernetes.io/version: "1.21"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nginx
+      app.kubernetes.io/component: front-end
+      app.kubernetes.io/part-of: hackathon
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nginx
+        app.kubernetes.io/component: front-end
+        app.kubernetes.io/part-of: hackathon
+        app.kubernetes.io/version: "1.21"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "4040"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: front-end-content
+          mountPath: /usr/share/nginx/html
+        - name: front-end-nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 1
+      - name: exporter
+        image: ghcr.io/martin-helmich/prometheus-nginxlog-exporter/exporter:v1.8
+        args: ["-config-file", "/etc/prometheus-nginxlog-exporter/config.hcl"]
+        ports:
+        - containerPort: 4040
+          name: metrics
+        volumeMounts:
+        - name: exporter-config
+          mountPath: /etc/prometheus-nginxlog-exporter
+      volumes:
+        - name: front-end-content
+          configMap:
+            name: front-end-content
+        - name: front-end-nginx-conf
+          configMap:
+            name: front-end-nginx-conf
+        - name: exporter-config
+          configMap:
+            name: exporter-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/component: front-end
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/part-of: hackathon
+  name: front-end
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    name: tcp-80
+  - port: 4040
+    protocol: TCP
+    targetPort: 4040
+    name: tcp-4040
+  selector:
+    app.kubernetes.io/component: front-end
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/part-of: hackathon
+  type: ClusterIP

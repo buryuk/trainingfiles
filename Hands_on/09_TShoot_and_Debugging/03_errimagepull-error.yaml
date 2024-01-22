@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: errimagepull-error
+spec:
+  containers:
+    - command:
+        - sleep
+        - "3600"
+      image: xbusybox
+      name: errimagepull-error

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: run-container-error
+spec:
+  containers:
+    - command:
+        - xsleep
+        - "3600"
+      image: busybox
+      name: run-container-error

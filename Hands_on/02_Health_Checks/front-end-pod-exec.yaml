@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: front-end-pod-exec
+  name: front-end-pod-exec
+spec:
+  containers:
+  - name: front-end-container
+    image: nginx:1.20
+    ports:
+    - containerPort: 80
+      name: http
+    readinessProbe:
+      exec:
+        command:
+        - cat
+        - /usr/share/nginx/html/index.html
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+    
