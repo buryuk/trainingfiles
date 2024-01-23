@@ -1,0 +1,81 @@
+info:
+    description: |-
+        # This service provides generic book information
+
+        This service serves its metrics on /metrics endpoint ready for prometheus to scrape
+
+        This service serves its documentation on /docs endpoint
+
+        This service can report its span data to a jaeger agent. To enable this, set the following environment variables
+
+        JAEGER_AGENT_HOST - the host name of the jaeger agent
+
+        JAEGER_AGENT_PORT - the port number of the jaeger agent//
+    title: BookInfo API.
+paths:
+    /:
+        get:
+            description: Returns OK if there's no problem
+            operationId: index
+            responses:
+                "200":
+                    $ref: '#/responses/OK'
+            tags:
+                - Index
+    /book:
+        get:
+            description: Return all the bookInfos
+            operationId: GetBookInfos
+            responses:
+                "200":
+                    $ref: '#/responses/OK'
+                "500":
+                    $ref: '#/responses/errorResponse'
+            tags:
+                - BookInfo
+    /book/{id}:
+        get:
+            description: Return the the bookInfo with the given id
+            operationId: GetBookInfo
+            responses:
+                "200":
+                    $ref: '#/responses/OK'
+                "400":
+                    $ref: '#/responses/Bad'
+                    description: Request
+                "500":
+                    $ref: '#/responses/errorResponse'
+            tags:
+                - BookInfo
+    /health/live:
+        get:
+            description: Return 200 if the api is up and running
+            operationId: Live
+            responses:
+                "200":
+                    $ref: '#/responses/OK'
+                "404":
+                    $ref: '#/responses/errorResponse'
+            tags:
+                - Health
+    /health/ready:
+        get:
+            description: Return 200 if the api is up and running and connected to the database
+            operationId: Ready
+            responses:
+                "200":
+                    $ref: '#/responses/OK'
+                "404":
+                    $ref: '#/responses/errorResponse'
+            tags:
+                - Health
+    /version:
+        get:
+            description: Returns version information
+            operationId: version
+            responses:
+                "200":
+                    $ref: '#/responses/OK'
+            tags:
+                - Index
+swagger: "2.0"

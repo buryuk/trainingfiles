@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stockapi
+    layer: api
+    version: "2"
+  name: stockapi2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stockapi
+      version: "2"
+  template:
+    metadata:
+      labels:
+        app: stockapi
+        version: "2"
+    spec:
+      containers:
+      - image: serdarkalayci/bookinfo-stock:1.2
+        name: bookstock-api
+        env:
+        - name: BASE_URL
+          value: ":5555"
+        - name: ConnectionString
+          value: redis:6379
+        - name: DatabaseName
+          value: "0"
+        ports:
+        - containerPort: 5555
+        volumeMounts:
+          - name: api-livesettings
+            mountPath: go/bin/configuration
+      restartPolicy: Always
+      volumes:
+        - name: api-livesettings
+          configMap:
+            name: api-livesettings

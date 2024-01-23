@@ -1,0 +1,9 @@
+{
+    "Logging": {
+        "LogLevel": {
+        "Default": "Info",
+        "System": "Info",
+        "Microsoft": "Info"
+        }
+    }
+}

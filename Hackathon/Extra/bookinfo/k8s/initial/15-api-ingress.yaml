@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  annotations:
+    nginx.org/rewrites: "serviceName:infoapi rewrite:/"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: bookinfo.localdev.me
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: infoapi
+            port:
+              number: 5550
