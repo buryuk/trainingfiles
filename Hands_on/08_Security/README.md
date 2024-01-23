@@ -61,6 +61,51 @@
     test-kubectl             0/1     Completed   0          3s
     ```
 
+# Pod Security Standards
+
+    Create a new namespace called example:
+    ```
+    kubectl create ns example
+    ```
+    The output is similar to this:
+    ```
+    namespace/example created
+    ```
+    Execute below command:
+    ```
+    kubectl label --overwrite ns example \
+        pod-security.kubernetes.io/warn=baseline \
+        pod-security.kubernetes.io/warn-version=latest
+    ```
+    Execute below command:
+    ```
+    kubectl label --overwrite ns example \
+        pod-security.kubernetes.io/enforce=baseline \
+        pod-security.kubernetes.io/enforce-version=latest \
+        pod-security.kubernetes.io/warn=restricted \
+        pod-security.kubernetes.io/warn-version=latest \
+        pod-security.kubernetes.io/audit=restricted \
+        pod-security.kubernetes.io/audit-version=latest
+    ```
+    Create a baseline Pod in the example namespace:
+    ```
+    kubectl apply -n example -f https://k8s.io/examples/security/example-baseline-pod.yaml
+    ```
+    The Pod does start OK; the output includes a warning. For example:
+    ```
+    Warning: would violate PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    pod/nginx created
+    ```
+    Create a baseline Pod in the default namespace:
+    ```
+    kubectl apply -n default -f https://k8s.io/examples/security/example-baseline-pod.yaml
+    ```
+    Output is similar to this:
+    ```
+    pod/nginx created
+    ```
+    The Pod Security Standards enforcement and warning settings were applied only to the example namespace. You could create the same Pod in the default namespace with no warnings.
+
 17.  Clean your environment
     ```
     ./delete.sh
