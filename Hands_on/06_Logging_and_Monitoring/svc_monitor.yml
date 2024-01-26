@@ -13,4 +13,4 @@ spec:
   - port: tcp-4040
   namespaceSelector:
     matchNames:
-    - default
+    - burak

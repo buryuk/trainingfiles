@@ -32,7 +32,7 @@ Set up Prometheus to scrape metrics from MongoDB Exporter. Define PrometheusRule
 
 ### Scaling:
 
-Create a solution that allows for easy horizontal scaling of MongoDB instances. Implement auto-scaling based on workload and resource utilization, and ensure that data remains consistent across scaled instances.
+Create a solution that allows for easy horizontal scaling of app instances. Implement auto-scaling based on workload and resource utilization.
 
 ### Backup and Restore:
 
@@ -56,7 +56,7 @@ Provide clear and concise documentation for the entire MongoDB deployment and ma
 6. Backup and restore capabilities.
 7. Documentation quality and clarity.
 8. Creativity and innovation in addressing the challenges.
-9. API and DB should be running on different nodes.
+9. API and DB should be running on different pods.
 
 ### Additional Information:
 

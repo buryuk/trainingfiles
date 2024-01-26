@@ -36,6 +36,7 @@
     Version: 1.0.0
     Hostname: web-58756b54cc-lppjn
     ```
+    ```
     Hello, world!
     Version: 2.0.0
     Hostname: web2-58f57dc448-vmwws
