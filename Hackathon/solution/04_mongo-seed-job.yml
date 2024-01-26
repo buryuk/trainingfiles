@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      initContainers:
+      - name: init-mongo-db
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nslookup mongo-db; do echo waiting for mongo-db; sleep 2; done;']
+      containers:
+        - name: seed
+          image: yukselburak/mongo-seed:latest
+          env:
+          - name: MONGO_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: username
+          - name: MONGO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: password
+          - name: MONGO_INITDB_DATABASE
+            value: admin
+      restartPolicy: Never

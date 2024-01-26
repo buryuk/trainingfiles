@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-db
+  labels:
+    app: mongo-db
+spec:
+  serviceName: mongo-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-db
+  template:
+    metadata:
+      labels:
+        app: mongo-db
+    spec:
+      containers:
+      - name: mongo-db
+        image: yukselburak/mongodb:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: password
+        - name: MONGO_INITDB_DATABASE
+          value: admin
+        ports:
+        - containerPort: 27017
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongo-claim
+      - name: mongo-exporter
+        image: percona/mongodb_exporter:0.40.0
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://127.0.0.1:27017/"
+        ports:
+        - containerPort: 9216
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: mongo-claim
+        persistentVolumeClaim:
+            claimName: mongo-claim
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-claim
+      spec:
+        storageClassName: standard
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: mongo-db
+    labels:
+        app: mongo-db
+spec:
+    selector:
+        app: mongo-db
+    type: ClusterIP
+    ports:
+    - name: tcp-27017
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+    - name: tcp-9216
+      protocol: TCP
+      port: 9216
+      targetPort: 9216
