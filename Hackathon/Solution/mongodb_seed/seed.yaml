@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongo-db-seed
+spec:
+  template:
+    spec:
+      containers:
+      - name: mongo-db-seed-job
+        image: yukselburak/mongo-seed:latest  
+        env:
+          - name: MONGO_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongo-db-secrets
+                key: username
+          - name: MONGO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-db-secrets
+                key: password
+          - name: MONGO_INITDB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: mongo-db-secrets
+                key: database
+      restartPolicy: Never
+  backoffLimit: 3
