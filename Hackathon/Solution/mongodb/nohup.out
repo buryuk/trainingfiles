@@ -1,0 +1,57 @@
+Forwarding from 127.0.0.1:9090 -> 9090
+Forwarding from [::1]:9090 -> 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+error: lost connection to pod
+Forwarding from 127.0.0.1:9090 -> 9090
+Forwarding from [::1]:9090 -> 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+E0126 13:21:53.895967   76807 portforward.go:381] error copying from remote stream to local connection: readfrom tcp6 [::1]:9090->[::1]:59969: write tcp6 [::1]:9090->[::1]:59969: write: broken pipe
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+E0126 13:34:41.618365   76807 portforward.go:381] error copying from remote stream to local connection: readfrom tcp6 [::1]:9090->[::1]:51239: write tcp6 [::1]:9090->[::1]:51239: write: broken pipe
+E0126 13:34:41.627771   76807 portforward.go:381] error copying from remote stream to local connection: readfrom tcp6 [::1]:9090->[::1]:51237: write tcp6 [::1]:9090->[::1]:51237: write: broken pipe
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+E0126 13:35:11.596072   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+E0126 13:35:12.489779   76807 portforward.go:370] error creating forwarding stream for port 9090 -> 9090: Timeout occurred
+Handling connection for 9090
+Handling connection for 9090
+Handling connection for 9090
+E0126 13:42:36.387018   76807 portforward.go:381] error copying from remote stream to local connection: readfrom tcp6 [::1]:9090->[::1]:57504: write tcp6 [::1]:9090->[::1]:57504: write: broken pipe
+Handling connection for 9090
+Handling connection for 9090
+E0126 13:42:36.744710   76807 portforward.go:381] error copying from remote stream to local connection: readfrom tcp6 [::1]:9090->[::1]:58799: write tcp6 [::1]:9090->[::1]:58799: write: broken pipe
+Handling connection for 9090
+E0126 13:42:56.395967   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+Unable to listen on port 9090: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:9090: bind: address already in use unable to create listener: Error listen tcp6 [::1]:9090: bind: address already in use]
+error: unable to listen on any of the requested ports: [{9090 9090}]
+E0126 13:43:06.712389   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+E0126 13:43:06.736044   76807 portforward.go:370] error creating forwarding stream for port 9090 -> 9090: Timeout occurred
+Handling connection for 9090
+E0126 13:43:20.159671   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+E0126 13:43:36.915013   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+Handling connection for 9090
+E0126 13:44:07.944179   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+Handling connection for 9090
+Handling connection for 9090
+E0126 13:44:42.966706   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred
+E0126 13:45:11.253238   76807 portforward.go:347] error creating error stream for port 9090 -> 9090: Timeout occurred

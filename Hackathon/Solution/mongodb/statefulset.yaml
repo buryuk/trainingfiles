@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-db
+spec:
+  serviceName: "mongo-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-db
+  template:
+    metadata:
+      labels:
+        app: mongo-db
+    spec:
+      containers:
+        - name: mongodb
+          image: yukselburak/mongodb:latest
+          ports:
+            - containerPort: 27017
+              name: tcp-27017
+          volumeMounts:
+            - name: mongo-db-pvc
+              mountPath: /data/db
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets
+                  key: password
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets
+                  key: database
+        - name: exporter
+          image: percona/mongodb_exporter:0.40
+          ports:
+            - containerPort: 9216
+              name: prom-metrics
+          env:
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets
+                  key: username
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets
+                  key: password
+          args: ["--mongodb.uri=mongodb://localhost:27017"]
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/prometheus-nginxlog-exporter
+      volumes:
+        - name: mongo-db-pvc
+          persistentVolumeClaim:
+            claimName: mongo-db-pvc
+        - name: exporter-config
+          configMap:
+            name: exporter-config
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-db-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 1Gi

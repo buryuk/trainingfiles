@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-app
+spec:
+  selector:
+    matchLabels:
+      run: api-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: api-app
+    spec:
+      containers:
+      - name: api-app
+        image: yukselburak/app:latest
+        ports:
+        - containerPort: 5000
+        env:
+          - name: MONGO_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secrets
+                key: username
+          - name: MONGO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secrets
+                key: password
+          - name: MONGO_INITDB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secrets
+                key: database

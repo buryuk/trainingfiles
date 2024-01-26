@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mongo-db
+  namespace: monitoring
+  labels:
+    release: kube-prom-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: mongo-db
+  endpoints:
+    - port: tcp-prom-exporter
+  namespaceSelector:
+    matchNames:
+      - default
